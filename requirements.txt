@@ -1,3 +1,4 @@
+psycopg2-binary
 flask
 pygrib
 matplotlib
@@ -5,4 +6,3 @@ imageio
 geopandas
 herbie
 pillow
-psycopg2-binary
