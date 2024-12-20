@@ -26,4 +26,6 @@ WORKDIR /app
 COPY . /app
 
 # Install Python dependencies (dry run to log dependency tree)
+RUN pip install --upgrade pip
+
 RUN pip install --no-cache-dir --dry-run -r requirements.txt
