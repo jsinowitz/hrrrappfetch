@@ -8,7 +8,7 @@ from herbie import Herbie
 from datetime import datetime, timedelta
 from PIL import Image
 import time
-
+#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 personal access token for github clone and pushing to google cloud run
 app = Flask(__name__)
 
 # Load US state boundaries from shapefile using GeoPandas
