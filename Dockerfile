@@ -1,10 +1,5 @@
 FROM python:3.10-slim
 
-# Install PostgreSQL development tools
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev gcc && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Set working directory
 WORKDIR /app
 
