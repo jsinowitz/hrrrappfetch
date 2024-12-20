@@ -1,5 +1,4 @@
-psycopg2-binary>=2.9.10
-
+psycopg2-binary==2.9.10  # Pin the version you want
 flask
 pygrib
 matplotlib
@@ -7,3 +6,5 @@ imageio
 geopandas
 herbie
 pillow
+django  # Or other package that may require psycopg2
+--no-binary psycopg2  # Explicitly block psycopg2 from being built
