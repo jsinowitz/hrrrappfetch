@@ -5,3 +5,4 @@ imageio
 geopandas
 herbie
 pillow
+psycopg2-binary
