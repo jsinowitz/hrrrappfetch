@@ -1,18 +1,23 @@
-# Use the official Python image as the base
 FROM python:3.10-slim
 
-# Set the working directory in the container
+# Install PostgreSQL development tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev gcc && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
 WORKDIR /app
 
-# Copy all project files into the container
+# Copy project files
 COPY . /app
 
-# Install dependencies
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the port Flask will run on
+# Expose port for the app
 EXPOSE 8080
 
 # Command to run the application
 CMD ["python", "main.py"]
+
 
