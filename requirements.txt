@@ -1,8 +1,8 @@
 flask
-pygrib
+#pygrib
 matplotlib
 imageio
 geopandas
-herbie
+#herbie
 pillow
-psycopg2
+#psycopg2
