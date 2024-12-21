@@ -13,9 +13,10 @@ COPY . /app
 
 # Upgrade pip
 RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt -c constraints.txt
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# # Install Python dependencies
+# RUN pip install --no-cache-dir -r requirements.txt
 
 # Expose port for the Flask app
 EXPOSE 8080
