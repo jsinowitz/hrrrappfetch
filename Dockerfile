@@ -1,12 +1,11 @@
-# Use the official slim Python image as a base
 FROM python:3.10-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies for psycopg2 and Python
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev gcc && \
+    gcc && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copy the application code into the container
