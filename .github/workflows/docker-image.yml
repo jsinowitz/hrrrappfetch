@@ -1,0 +1,28 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Check out the repository code
+    - uses: actions/checkout@v4
+
+    # Step 3: Build the Docker image
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ghcr.io/jsinowitz/weather-model-gif-app:latest
+
+    # Step 4: Push the image to GitHub Container Registry (optional)
+    - name: Push the Docker image
+      run: docker push ghcr.io/jsinowitz/weather-model-gif-app:latest
+
+    # Step 5: Test the Docker image (optional)
+    - name: Test the Docker image
+      run: |
+        docker run --rm ghcr.io/jsinowitz/weather-model-gif-app:latest python -c "import matplotlib; print('Success!')"
