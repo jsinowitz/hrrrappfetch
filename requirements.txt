@@ -6,6 +6,4 @@ imageio
 geopandas
 herbie
 pillow
-django  # Or other package that may require psycopg2
-libpq-dev
-#--no-binary psycopg2  # Explicitly block psycopg2 from being built
+psycopg2-binary
