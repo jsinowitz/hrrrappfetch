@@ -1,8 +1,8 @@
+psycopg2-binary
+psycopg2==none  # Block psycopg2 installation
 flask
-#pygrib
+pygrib
 matplotlib
 imageio
 geopandas
-#herbie
-pillow
-#psycopg2
+herbie-data[extras]
