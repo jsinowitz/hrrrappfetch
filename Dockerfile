@@ -28,7 +28,7 @@
 # Use a base image with Python
 FROM python:3.10-slim
 
-# Install necessary system packages
+# Install necessary system dependencies, including NetCDF and AEC
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cmake \
     gfortran \
@@ -41,12 +41,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libnetcdf-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install eccodes from source
+# Install eccodes from source with NetCDF and AEC support
 RUN wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.34.1-Source.tar.gz && \
     tar -xvzf eccodes-2.34.1-Source.tar.gz && \
     cd eccodes-2.34.1-Source && \
     mkdir build && cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && \
+    cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
+          -DENABLE_NETCDF=ON \
+          -DENABLE_AEC=ON .. && \
     make -j$(nproc) && \
     make install && \
     cd /app && rm -rf eccodes-2.34.1-Source*
@@ -63,3 +65,8 @@ COPY . /app/
 
 # Command to run the application
 CMD ["python", "app.py"]
+
+
+
+
+
