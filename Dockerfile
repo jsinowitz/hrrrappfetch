@@ -28,13 +28,18 @@
 # Use a base image with Python
 FROM python:3.10-slim
 
-# Set the working directory inside the container
-WORKDIR /app
-
-# Install system dependencies for `eccodes` and Python
+# Install necessary system packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    cmake gfortran libpng-dev libjpeg-dev zlib1g-dev wget build-essential && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    cmake \
+    gfortran \
+    libpng-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    wget \
+    build-essential \
+    libaec-dev \
+    libnetcdf-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install eccodes from source
 RUN wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.34.1-Source.tar.gz && \
@@ -46,15 +51,15 @@ RUN wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.34
     make install && \
     cd /app && rm -rf eccodes-2.34.1-Source*
 
-# Install Python dependencies
+# Set working directory
+WORKDIR /app
+
+# Copy requirements and install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-# Expose port for the Flask app
-EXPOSE 8080
+# Copy application code
+COPY . /app/
 
-# Add application code
-COPY . /app
-
-# Run the application
-CMD ["python", "main.py"]
+# Command to run the application
+CMD ["python", "app.py"]
