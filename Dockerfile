@@ -1,31 +1,24 @@
-# FROM python:3.10-slim
-# # Rebuilding to force cache invalidation
-
-# # Set working directory
-# WORKDIR /app
-
-# # Copy project files
-# COPY . /app
-
-# # Install Python dependencies
-# RUN pip install --no-cache-dir -r requirements.txt
-
-# # Expose port for the app
-# EXPOSE 8080
-
-# # Command to run the application
-# CMD ["python", "main.py"]
-
-
 FROM python:3.10-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy project files
+# Install system dependencies required for psycopg2 and Python builds
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev gcc && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copy project files into the container
 COPY . /app
 
-# Install Python dependencies (dry run to log dependency tree)
+# Upgrade pip
 RUN pip install --upgrade pip
 
-RUN pip install --no-cache-dir --dry-run -r requirements.txt
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose port for the app
+EXPOSE 8080
+
+# Command to run the application
+CMD ["python", "main.py"]
