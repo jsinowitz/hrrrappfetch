@@ -3,22 +3,22 @@ FROM python:3.10-slim
 # Set working directory
 WORKDIR /app
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev python3-dev gcc && \
+    libpq-dev python3-dev gcc \
+    libgrib-api-dev libeccodes-dev \
+    gdal-bin libgdal-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy the application code into the container
+# Copy application code
 COPY . /app
 
-# Upgrade pip
-RUN pip install --upgrade pip
-
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt -c constraints.txt
+COPY requirements.txt /app/requirements.txt
+COPY constraints.txt /app/constraints.txt
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt -c constraints.txt
 
-# Expose port for the Flask app
+# Expose port and set default command
 EXPOSE 8080
-
-# Run the application
 CMD ["python", "main.py"]
-
