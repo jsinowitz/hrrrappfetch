@@ -28,7 +28,6 @@
 # Use a base image with Python
 FROM python:3.10-slim
 
-# Install necessary system dependencies, including NetCDF and AEC
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cmake \
     gfortran \
@@ -38,10 +37,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     build-essential \
     libaec-dev \
-    libnetcdf-dev \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    libnetcdf-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install eccodes from source with NetCDF and AEC support
 RUN wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.34.1-Source.tar.gz && \
     tar -xvzf eccodes-2.34.1-Source.tar.gz && \
     cd eccodes-2.34.1-Source && \
