@@ -1,31 +1,3 @@
-# FROM python:3.10-slim
-
-# # Set working directory
-# WORKDIR /app
-
-# # Install system dependencies
-# # RUN apt-get update && apt-get install -y --no-install-recommends \
-# #     libpq-dev python3-dev gcc \
-# #     libgrib-api-dev libeccodes-dev \
-# #     gdal-bin libgdal-dev && \
-# #     apt-get clean && rm -rf /var/lib/apt/lists/*
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     libeccodes-dev gdal-bin libgdal-dev && \
-#     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# # Copy application code
-# COPY . /app
-
-# # Install Python dependencies
-# COPY requirements.txt /app/requirements.txt
-# COPY constraints.txt /app/constraints.txt
-# RUN pip install --upgrade pip && \
-#     pip install --no-cache-dir -r requirements.txt -c constraints.txt
-
-# # Expose port and set default command
-# EXPOSE 8080
-# CMD ["python", "main.py"]
-# Use a base image with Python
 FROM python:3.10-slim
 
 # Set the working directory inside the container
@@ -51,8 +23,12 @@ RUN wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.34
     mkdir build && cd build && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DENABLE_NETCDF=ON \
-          -DENABLE_AEC=ON .. && \
-    make -j$(nproc) && \
+          -DNetCDF_INCLUDE_DIR=/usr/include \
+          -DNetCDF_LIBRARY=/usr/lib/x86_64-linux-gnu/libnetcdf.so \
+          -DENABLE_AEC=ON \
+          -DAEC_LIBRARY=/usr/lib/x86_64-linux-gnu/libaec.so \
+          -DAEC_INCLUDE_DIR=/usr/include/aec .. --debug-output && \
+    make VERBOSE=1 -j$(nproc) && \
     make install && \
     cd /app && rm -rf eccodes-2.34.1-Source*
 
@@ -60,17 +36,12 @@ RUN wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.34
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
+RUN chmod -R 755 /app
 # Copy the application code
 COPY . /app/
 
-# Set environment variables
-ENV PYTHONIOENCODING=UTF-8
-
-# Expose port
+# Expose port (if required by your app)
 EXPOSE 8080
-
-# Set permissions
-RUN chmod -R 755 /app
 
 # Command to run the application
 CMD ["python", "app.py"]
