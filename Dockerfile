@@ -55,6 +55,7 @@ RUN wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.34
     make -j$(nproc) && \
     make install && \
     cd /app && rm -rf eccodes-2.34.1-Source*
+RUN chmod -R 755 /app
 
 # Copy the requirements file and install Python dependencies
 COPY requirements.txt /app/
