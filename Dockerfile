@@ -16,19 +16,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libnetcdf-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install eccodes from source
+# Install eccodes from source step by step for debugging
 RUN wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.34.1-Source.tar.gz && \
     tar -xvzf eccodes-2.34.1-Source.tar.gz && \
     cd eccodes-2.34.1-Source && \
     mkdir build && cd build && \
     cmake -DCMAKE_INSTALL_PREFIX=/usr/local \
           -DENABLE_NETCDF=ON \
-          -DNetCDF_INCLUDE_DIR=/usr/include \
-          -DNetCDF_LIBRARY=/usr/lib/x86_64-linux-gnu/libnetcdf.so \
-          -DENABLE_AEC=ON \
-          -DAEC_LIBRARY=/usr/lib/x86_64-linux-gnu/libaec.so \
-          -DAEC_INCLUDE_DIR=/usr/include/aec .. --debug-output && \
-    make VERBOSE=1 -j$(nproc) && \
+          -DENABLE_AEC=ON .. --debug-output && \
+    make VERBOSE=1 -j$(nproc)
+
+# Check the build directory
+RUN ls -l /app/eccodes-2.34.1-Source/build
+
+# Continue installation
+RUN cd /app/eccodes-2.34.1-Source/build && \
     make install && \
     cd /app && rm -rf eccodes-2.34.1-Source*
 
@@ -36,7 +38,6 @@ RUN wget https://confluence.ecmwf.int/download/attachments/45757960/eccodes-2.34
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
-RUN chmod -R 755 /app
 # Copy the application code
 COPY . /app/
 
