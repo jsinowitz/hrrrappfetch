@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, send_file
+from flask_cors import CORS
 import os
 import pygrib
 import matplotlib.pyplot as plt
@@ -8,11 +9,13 @@ from herbie import Herbie
 from datetime import datetime, timedelta
 from PIL import Image
 import time
-#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 personal access token for github clone and pushing to google cloud run
+import shutil
+
 app = Flask(__name__)
+CORS(app)  # Enable Cross-Origin Resource Sharing for frontend integration
 
 # Load US state boundaries from shapefile using GeoPandas
-shapefile_path = "/app/ne_50m_admin_1_states_provinces_lakes.shp"  # Update this path
+shapefile_path = "/app/data/ne_50m_admin_1_states_provinces_lakes.shp"  # Updated path
 us_states = None  # Initialize as None in case the shapefile isn't present
 if os.path.exists(shapefile_path):
     us_states = gpd.read_file(shapefile_path)
@@ -141,8 +144,11 @@ def generate_gif():
 
     gif_path = create_gif(output_dir, frame_num)
     if gif_path:
+        # Clean up after creating GIF
+        shutil.rmtree(output_dir)
         return send_file(gif_path, as_attachment=True, download_name="HRRR_GIF.gif", mimetype="image/gif")
     else:
+        shutil.rmtree(output_dir)  # Clean up even if GIF creation fails
         return jsonify({"error": "Failed to generate GIF"}), 500
 
 if __name__ == '__main__':
