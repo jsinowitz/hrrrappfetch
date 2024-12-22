@@ -30,16 +30,16 @@ predefined_regions = {
     "Great Lakes": {"lon_min": -95, "lon_max": -75, "lat_min": 35, "lat_max": 49},
 }
 
-# Utility functions
-def download_data(attempt_time, product, max_retries=3, retry_delay=5):
+def download_data(attempt_time, product="sfc", max_retries=3, retry_delay=5):
     attempt = 0
     while attempt < max_retries:
         try:
+            # Explicitly set model to HRRR and source to AWS
             H = Herbie(attempt_time, model="hrrr", product=product, source="aws")
             file_path = H.download()
             return file_path, attempt_time
         except Exception as e:
-            print(f"Error downloading data for {attempt_time}: {e}")
+            print(f"Error downloading HRRR data for {attempt_time}: {e}")
             attempt += 1
             time.sleep(retry_delay)
     return None, attempt_time
